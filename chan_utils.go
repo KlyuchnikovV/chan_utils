@@ -5,10 +5,10 @@ import (
 	"fmt"
 )
 
-func NewListener(ctx context.Context, onMessage func(interface{}), onError func(error)) (func(chan interface{}), context.CancelFunc) {
+func NewListener(ctx context.Context, ch chan interface{}, onMessage func(interface{}), onError func(error)) (func(), context.CancelFunc) {
 	ctx, cancel := context.WithCancel(ctx)
 
-	return func(ch chan interface{}) {
+	return func() {
 		defer func() {
 			if e := recover(); e != nil {
 				onError(e.(error))
