@@ -5,7 +5,11 @@ import (
 	"fmt"
 )
 
-func NewListener(ctx context.Context, ch chan interface{}, onMessage func(interface{}), onError func(error)) (func(), context.CancelFunc) {
+type Message interface {
+	GetMessage(data interface{})
+}
+
+func NewListener(ctx context.Context, ch chan Message, onMessage func(Message), onError func(error)) (func(), context.CancelFunc) {
 	ctx, cancel := context.WithCancel(ctx)
 
 	return func() {
@@ -31,10 +35,10 @@ func NewListener(ctx context.Context, ch chan interface{}, onMessage func(interf
 	}, cancel
 }
 
-func GetMessage(ctx context.Context, ch chan interface{}) (interface{}, error) {
+func GetMessage(ctx context.Context, ch chan Message) (Message, error) {
 	var ok bool
 	var err error
-	var msg interface{}
+	var msg Message
 
 	defer func() {
 		if e := recover(); e != nil {
