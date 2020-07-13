@@ -6,7 +6,7 @@ import (
 )
 
 type Message interface {
-	GetMessage() interface{}
+	GetMessage() Message
 }
 
 func NewListener(ctx context.Context, ch chan Message, onMessage func(Message), onError func(error)) (func(), context.CancelFunc) {
